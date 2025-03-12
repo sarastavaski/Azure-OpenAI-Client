@@ -1,0 +1,108 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>Fourth Wing AI Companion</title>  
+  <style>  
+    body {  
+      font-family: "Arial", sans-serif;  
+      background: linear-gradient(to bottom, #2c3e50, #34495e);  
+      color: #ecf0f1;  
+      text-align: center;  
+      margin: 0;  
+      padding: 0;  
+    }  
+  
+    h1 {  
+      margin: 20px 0;  
+    }  
+  
+    .container {  
+      display: flex;  
+      align-items: center;  
+      justify-content: center;  
+      margin-top: 20px;  
+    }  
+  
+    #dragon-image {  
+      width: 100%;  
+      max-width: 150px; /* Adjusted for smaller dragon image */  
+      border-radius: 10px;  
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  
+    }  
+  
+    .chat-bar {  
+      margin-left: 20px; /* Space between dragon and chat bar */  
+      display: flex;  
+      flex-direction: column;  
+      align-items: flex-start; /* Align input and button to the left */  
+    }  
+  
+    input {  
+      padding: 10px;  
+      border-radius: 5px;  
+      border: none;  
+      font-size: 1rem;  
+      width: 300px; /* Make input wider */  
+    }  
+  
+    button {  
+      padding: 10px 20px;  
+      margin-top: 10px;  
+      border-radius: 5px;  
+      border: none;  
+      background-color: #1abc9c;  
+      color: white;  
+      font-size: 1rem;  
+      cursor: pointer;  
+      transition: 0.3s;  
+    }  
+  
+    button:hover {  
+      background-color: #16a085;  
+    }  
+  
+    #response {  
+      margin-top: 20px;  
+      font-size: 1.2rem;  
+    }  
+  </style>  
+</head>  
+<body>  
+  <h1>Ask the Wise Dragon</h1>  
+  <div class="container">  
+    <img id="dragon-image" src="{{ url_for('static', filename='dragon.png') }}" alt="Cool Dragon">  
+    <div class="chat-bar">  
+      <input type="text" id="question" placeholder="Type your question about Fourth Wing..." />  
+      <button id="ask-button">Submit</button>  
+    </div>  
+  </div>  
+  <div id="response"></div>  
+  
+  <script>  
+    document.getElementById('ask-button').addEventListener('click', async () => {  
+      const question = document.getElementById('question').value;  
+      const responseDiv = document.getElementById('response');  
+  
+      if (!question.trim()) {  
+        responseDiv.textContent = "Please enter a question!";  
+        return;  
+      }  
+  
+      responseDiv.textContent = "Thinking...";  
+      try {  
+        const res = await fetch('/ask-dragon', {  
+          method: 'POST',  
+          headers: { 'Content-Type': 'application/json' },  
+          body: JSON.stringify({ question })  
+        });  
+        const data = await res.json();  
+        responseDiv.textContent = data.response || "No response from the dragon.";  
+      } catch (error) {  
+        responseDiv.textContent = `Error: ${error.message}`;  
+      }  
+    });  
+  </script>  
+</body>  
+</html>
